@@ -1,0 +1,60 @@
+.calculator-panel {
+    background-color: #D1D8F3;
+    border: 2px solid #5D5EBB;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-select {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    height: 24px;
+    width: 160px;
+}
+
+.btn-pick {
+    color: SteelBlue;
+    font-family: Verdana, sans-serif;
+    font-weight: bold;
+    height: 22px;
+    width: 52px;
+}
+
+.btn-calculate {
+    color: SteelBlue;
+    font-family: Verdana, sans-serif;
+    font-weight: bold;
+    height: 24px;
+    width: 126px;
+}
+
+.info-panel {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.help-link {
+    font-family: Verdana, sans-serif;
+    font-size: 11px;
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.help-link:hover {
+    text-decoration: underline;
+} 
