@@ -4,69 +4,96 @@
     <title>Open-Rad Free Online Radioactive Isotopes Decay Calculator</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="shortcut icon" href="RadPro.ico">
-    <link rel="stylesheet" href="CSS/PageLinks.css">
     <link rel="stylesheet" href="CSS/decay.css">
 </head>
 <body>
-    <form id="decayForm" method="post" action="./Decay.aspx">
-        <div class="header">
-            <img src="Images/RadProHeader.jpg" alt="Rad Pro Header" class="header-image">
-        </div>
+    <header class="header">
+        <h1 style="color: white;">Radioactive Decay Calculator</h1>
+    </header>
 
-        <div class="calculator-panel">
-            <h1>Decay Calculations</h1>
-
+    <main class="calculator-panel">
+        <h2>Decay Calculations</h2>
+        <form id="decayForm">
             <div class="input-group">
                 <label for="cboElement">Select Element</label>
                 <select id="cboElement" name="cboElement" class="form-select">
-                    <option value="Actinium (Ac)">Actinium (Ac)</option>
-                    <!-- Keep existing options -->
+                    <!-- Options populated by JavaScript -->
                 </select>
             </div>
 
             <div class="input-group">
                 <label for="cboIsotopes">Select Isotope</label>
                 <select id="cboIsotopes" name="cboIsotopes" class="form-select">
-                    <option value="Ac-225">Ac-225</option>
-                    <!-- Keep existing options -->
+                    <!-- Options populated by JavaScript -->
                 </select>
             </div>
 
             <div class="input-group">
                 <label for="txtHLife">Half Life (Days)</label>
-                <input type="text" id="txtHLife" name="txtHLife" value="10">
+                <input type="number" id="txtHLife" name="txtHLife" value="10" min="0" step="any" readonly>
             </div>
 
             <div class="input-group">
                 <label for="txtOrigDate">Original Date and/or Time</label>
                 <input type="datetime-local" id="txtOrigDate" name="txtOrigDate">
-                <button type="button" id="cmdPickOrig" class="btn-pick">Pick</button>
             </div>
 
             <div class="input-group">
                 <label for="txtCalcDate">Calculation Date and/or Time</label>
                 <input type="datetime-local" id="txtCalcDate" name="txtCalcDate">
-                <button type="button" id="cmdPickCalc" class="btn-pick">Pick</button>
             </div>
 
             <div class="input-group">
-                <label for="cboActivityUnits2">Select Units</label>
+                <label for="cboActivityUnits2">Activity Units</label>
                 <select id="cboActivityUnits2" name="cboActivityUnits2" class="form-select">
-                    <option value="cpm">cpm</option>
-                    <!-- Keep existing options -->
+                    <option value="Bq">Bq (Becquerel)</option>
+                    <option value="kBq">kBq (kiloBecquerel)</option>
+                    <option value="MBq">MBq (MegaBecquerel)</option>
+                    <option value="GBq">GBq (GigaBecquerel)</option>
+                    <option value="TBq">TBq (TeraBecquerel)</option>
+                    <option value="Ci">Ci (Curie)</option>
+                    <option value="mCi">mCi (milliCurie)</option>
+                    <option value="µCi">µCi (microCurie)</option>
+                    <option value="nCi">nCi (nanoCurie)</option>
+                    <option value="pCi">pCi (picoCurie)</option>
+                    <option value="dpm">dpm (Disintegrations per Minute)</option>
+                    <option value="cpm" selected>cpm (Counts per Minute)</option>
+                    <option value="cps">cps (Counts per Second)</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="txtOrigAct">Original Activity (cpm)</label>
-                <input type="text" id="txtOrigAct" name="txtOrigAct">
+                <label for="txtOrigAct">Original Activity (A₀)</label>
+                <input type="number" id="txtOrigAct" name="txtOrigAct" step="any" placeholder="Enter initial activity">
             </div>
 
             <div class="input-group">
-                <label for="txtAnswer">Calculated Activity (cpm)</label>
-                <input type="text" id="txtAnswer" name="txtAnswer" readonly>
+                <label for="txtAnswer">Calculated Activity (A)</label>
+                <input type="number" id="txtAnswer" name="txtAnswer" readonly placeholder="Result will appear here">
+            </div>
+
+            <div id="results-panel" class="results-panel" style="display: none;">
+                <h3>Calculation Details</h3>
+                <p id="time-elapsed"></p>
+                <p id="decay-constant"></p>
+                <p id="activity-ratio"></p>
+
+                <div class="visualization-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="tree">Decay Chain</button>
+                        <button class="tab-button" data-tab="chart">Activity Graph</button>
+                    </div>
+                    
+                    <div id="tree-tab" class="tab-content active">
+                        <div id="decay-tree"></div>
+                    </div>
+                    
+                    <div id="chart-tab" class="tab-content">
+                        <div class="chart-container">
+                            <canvas id="decayChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="checkbox-group">
@@ -75,22 +102,30 @@
             </div>
 
             <div class="button-group">
-                <button type="submit" id="cmdCalculate" class="btn-calculate">Calculate</button>
-                <button type="button" id="btnAbout" class="btn-about">About the Decay Calculator</button>
+                <button type="button" id="cmdCalculate" class="btn-calculate">Calculate</button>
+                <button type="button" id="btnAbout" class="btn-about">About</button>
             </div>
-        </div>
+        </form>
 
-        <div class="info-panel">
+        <section class="info-panel">
             <p>
-                Useful for calculating today's activity for any radioactive isotope. You may also back decay sources to find out the original activity (or for any date), knowing the current activity. If the isotope that you wish to decay is not on the drop down list, check the 'not listed' check-box and manually enter the isotope name and its half-life to perform the calculation.
+                Calculate radioactive decay for any isotope. Enter the original activity and dates to find the current activity, or back-calculate the original activity from a known current value. For unlisted isotopes, check the 'not listed' box and enter the half-life manually.
             </p>
-        </div>
+        </section>
+    </main>
 
-        <a href="http://www.ehs.washington.edu/rso/calculator/chelpdk.shtm" 
-           target="_blank" 
-           class="help-link">Radioactive Decay</a>
-    </form>
+    <footer>
+        <p>&copy; 2024 Open-Rad. All rights reserved.</p>
+    </footer>
 
-    <script src="js/decay.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+        import { calculator } from './js/decay.js';
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Calculator initialized with elements:', calculator.elementSelect?.options.length);
+        });
+    </script>
 </body>
 </html>
